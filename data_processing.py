@@ -16,45 +16,108 @@ from utils import seed_everything, load_json, save_json
 
 LOCAL_TRAIN_QRELS = os.path.join(PathManager.DATA_DIR, "local_train_qrels.json")
 
+DEFAULT_SOURCES = [
+    (PathManager.CORPUS_FILE, PathManager.QRELS_TRAIN_FILE, PathManager.QUERIES_TRAIN_FILE, "26_"),
+    (PathManager.CORPUS_2025_FILE, PathManager.QRELS_TRAIN_2025_FILE, PathManager.QUERIES_TRAIN_2025_FILE, "25_"),
+]
 
-def load_and_split_corpus():
+
+def _dedup_by_text(entries):
+    """Keep the first occurrence of each text (2026 wins, since it is loaded first)."""
+    seen, out = set(), []
+    for e in entries:
+        key = _normalize_text(e["text"])
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(e)
+    return out
+
+
+def _normalize_text(text):
+    return " ".join(str(text).strip().split())
+
+
+def _load_source(corpus_path, qrels_path, queries_path, prefix):
     """
-    Load raw JOKER data, create balanced train set, and local eval split.
+    Load one edition's corpus/qrels/queries and namespace every id with prefix.
 
-    :return: (jokes, sampled_non_jokes, train_queries, test_queries, test_qrels)
+    :return: (jokes, non_jokes, queries, qrels) with all docids/qids prefixed.
     """
-    corpus = load_json(PathManager.CORPUS_FILE)
-    qrels = load_json(PathManager.QRELS_TRAIN_FILE)
-    queries = load_json(PathManager.QUERIES_TRAIN_FILE)
+    corpus = load_json(corpus_path)
+    qrels = load_json(qrels_path)
+    queries = load_json(queries_path)
 
-    positive_doc_ids = {str(item["docid"]) for item in qrels if item.get("qrel") == 1}
+    positive_doc_ids = {f"{prefix}{item['docid']}" for item in qrels if item.get("qrel") == 1}
 
+    edition = prefix.rstrip("_")
     jokes, non_jokes = [], []
     for doc in corpus:
-        doc_id = str(doc["docid"])
+        doc_id = f"{prefix}{doc['docid']}"
         text = doc.get("text", "")
         if not text or len(text.strip()) < 5:
             continue
-        entry = {"text": text, "label": 1 if doc_id in positive_doc_ids else 0, "docid": doc_id}
-        (jokes if doc_id in positive_doc_ids else non_jokes).append(entry)
+        is_joke = doc_id in positive_doc_ids
+        entry = {"text": text, "label": 1 if is_joke else 0, "docid": doc_id, "edition": edition}
+        (jokes if is_joke else non_jokes).append(entry)
 
-    print(f"Corpus: {len(corpus)}, Jokes: {len(jokes)}, Non-jokes: {len(non_jokes)}")
+    ns_queries = [{**q, "qid": f"{prefix}{q['qid']}"} for q in queries]
+    ns_qrels = [{**r, "qid": f"{prefix}{r['qid']}", "docid": f"{prefix}{r['docid']}"} for r in qrels]
 
-    sampled = random.sample(non_jokes, min(len(jokes), len(non_jokes)))
-    final_data = jokes + sampled
+    print(f"[{edition}] corpus={len(corpus)} jokes={len(jokes)} "
+          f"non_jokes={len(non_jokes)} queries={len(ns_queries)} qrels={len(ns_qrels)}")
+    return jokes, non_jokes, ns_queries, ns_qrels
+
+
+def load_and_split_corpus(sources=None, dedup_text=False):
+    """
+    Load and combine one or more JOKER editions, build a balanced train set,
+    and create a local eval split over the combined query pool.
+
+    :param sources: list of (corpus_path, qrels_path, queries_path, prefix) tuples.
+    :param dedup_text: if True, drop documents whose text already appeared in an
+                       earlier-listed source (handles overlap across editions).
+    :return: (jokes, sampled_non_jokes, train_queries, test_queries, test_qrels)
+    """
+    if sources is None:
+        sources = DEFAULT_SOURCES
+
+    all_jokes, all_non_jokes, all_queries, all_qrels = [], [], [], []
+    for corpus_path, qrels_path, queries_path, prefix in sources:
+        jokes, non_jokes, queries, qrels = _load_source(
+            corpus_path, qrels_path, queries_path, prefix
+        )
+        all_jokes += jokes
+        all_non_jokes += non_jokes
+        all_queries += queries
+        all_qrels += qrels
+
+    if dedup_text:
+        before = len(all_jokes) + len(all_non_jokes)
+        all_jokes = _dedup_by_text(all_jokes)
+        all_non_jokes = _dedup_by_text(all_non_jokes)
+        joke_texts = {_normalize_text(d["text"]) for d in all_jokes}
+        all_non_jokes = [d for d in all_non_jokes if _normalize_text(d["text"]) not in joke_texts]
+        after = len(all_jokes) + len(all_non_jokes)
+        print(f"Text dedup removed {before - after} duplicate documents")
+
+    print(f"Combined: Jokes: {len(all_jokes)}, Non-jokes: {len(all_non_jokes)}")
+
+    sampled = random.sample(all_non_jokes, min(len(all_jokes), len(all_non_jokes)))
+    final_data = all_jokes + sampled
     random.shuffle(final_data)
 
     save_json(final_data, PathManager.PROCESSED_TRAIN_FILE)
-    print(f"Balanced dataset: {len(final_data)} ({len(jokes)} + {len(sampled)})")
+    print(f"Balanced dataset: {len(final_data)} ({len(all_jokes)} + {len(sampled)})")
 
-    random.shuffle(queries)
-    split_idx = int(len(queries) * 0.8)
-    train_queries = queries[:split_idx]
-    test_queries = queries[split_idx:]
+    random.shuffle(all_queries)
+    split_idx = int(len(all_queries) * 0.8)
+    train_queries = all_queries[:split_idx]
+    test_queries = all_queries[split_idx:]
     test_qids = {str(q["qid"]) for q in test_queries}
 
-    train_qrels = [q for q in qrels if str(q["qid"]) not in test_qids]
-    test_qrels = [q for q in qrels if str(q["qid"]) in test_qids]
+    train_qrels = [q for q in all_qrels if str(q["qid"]) not in test_qids]
+    test_qrels = [q for q in all_qrels if str(q["qid"]) in test_qids]
 
     save_json(train_queries, PathManager.LOCAL_TRAIN_QUERIES)
     save_json(test_queries, PathManager.LOCAL_TEST_QUERIES)
@@ -64,7 +127,7 @@ def load_and_split_corpus():
     print(f"Train queries: {len(train_queries)}, Test queries: {len(test_queries)}")
     print(f"Train qrels: {len(train_qrels)}, Test qrels: {len(test_qrels)}")
 
-    return jokes, sampled, train_queries, test_queries, test_qrels
+    return all_jokes, sampled, train_queries, test_queries, test_qrels
 
 
 def extract_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -177,32 +240,55 @@ def generate_plots(df: pd.DataFrame, qrels_per_query: Counter, jokes_n: int, non
 
 def main():
     """
-    Corpus loading, balanced sampling, train/test splitting, and analysis.
+    Combined (2025 + 2026) corpus loading, balanced sampling, train/test splitting, and analysis.
 
     Usage:
-        - python data_processing.py              # process data
-        - python data_processing.py --plots      # also generate analysis plots
+        - python data_processing.py                  # combine 2025 + 2026, process
+        - python data_processing.py --plots          # also generate analysis plots
+        - python data_processing.py --plots --dedup  # drop cross-edition duplicate texts
+        - python data_processing.py --only 26        # process a single edition (25 or 26)
     """
-    parser = argparse.ArgumentParser(description="JOKER data processing")
+    parser = argparse.ArgumentParser(description="JOKER 2025+2026 data processing")
     parser.add_argument("--plots", action="store_true", help="Generate analysis plots")
+    parser.add_argument(
+        "--dedup", action="store_true", help="Drop documents whose text already appeared in an earlier edition"
+    )
+    parser.add_argument(
+        "--only", choices=["25", "26"], default=None, help="Process a single edition instead of the combined set"
+    )
     args = parser.parse_args()
 
     seed_everything()
     ensure_dirs()
 
-    jokes, sampled, _train_q, _test_q, test_qrels = load_and_split_corpus()
+    sources = DEFAULT_SOURCES
+    if args.only:
+        sources = [s for s in DEFAULT_SOURCES if s[3] == f"{args.only}_"]
+
+    jokes, sampled, _train_q, _test_q, test_qrels = load_and_split_corpus(
+        sources=sources, dedup_text=args.dedup
+    )
 
     if args.plots:
         data = load_json(PathManager.PROCESSED_TRAIN_FILE)
         df = pd.DataFrame(data)
         df = extract_features(df)
 
-        features = ["word_count", "avg_word_len", "punc_density", "has_quotes",
-                    "exclamation_count", "question_count", "uppercase_ratio"]
+        features = [
+            "word_count", "avg_word_len", "punc_density", "has_quotes",
+            "exclamation_count", "question_count", "uppercase_ratio"
+        ]
         df["label_str"] = df["label"].map({0: "Non-Joke", 1: "Joke"})
+
         stats = df.groupby("label_str")[features].agg(["mean", "std", "median"]).round(3)
         stats.to_csv(os.path.join(PathManager.RESULTS_DIR, "data_statistics.csv"))
         print(stats)
+
+        if "edition" in df.columns and df["edition"].nunique() > 1:
+            stats_by_edition = (df.groupby(["edition", "label_str"])[features].agg(["mean", "std", "median"]).round(3))
+            stats_by_edition.to_csv(os.path.join(PathManager.RESULTS_DIR, "data_statistics_by_edition.csv"))
+            print(stats_by_edition)
+
         print(f"\nSplit info -> train queries: {len(_train_q)}, test queries: {len(_test_q)}")
 
         qrels_per_query = Counter(str(q["qid"]) for q in test_qrels)

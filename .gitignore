@@ -241,3 +241,7 @@ cython_debug/
 data/
 *.pt
 *.npy
+results/
+plots/
+models/
+checkpoints/

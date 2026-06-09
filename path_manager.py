@@ -10,9 +10,13 @@ class PathManager:
     PLOT_DIR = os.path.join(BASE, "plots")
 
     CORPUS_FILE = os.path.join(DATA_DIR, "joker_task1_retrieval_corpus26_english.json")
+    CORPUS_2025_FILE = os.path.join(DATA_DIR, "joker_task1_retrieval_corpus25_EN.json")
     QUERIES_TRAIN_FILE = os.path.join(DATA_DIR, "joker_task1_retrieval_queries_train26_english.json")
+    QUERIES_TRAIN_2025_FILE = os.path.join(DATA_DIR, "joker_task1_retrieval_queries_test25_EN.json")
     QRELS_TRAIN_FILE = os.path.join(DATA_DIR, "joker_task1_retrieval_qrels_train26_english.json")
+    QRELS_TRAIN_2025_FILE = os.path.join(DATA_DIR, "joker_task1_retrieval_qrels_train25_EN.json")
     QUERIES_TEST_FILE = os.path.join(DATA_DIR, "joker_task1_retrieval_queries_test26_english.json")
+    QUERIES_TEST_2025_FILE = os.path.join(DATA_DIR, "joker_task1_retrieval_queries_test25_EN.json")
 
     PROCESSED_TRAIN_FILE = os.path.join(DATA_DIR, "processed_joker_train.json")
     LOCAL_TRAIN_QUERIES = os.path.join(DATA_DIR, "local_train_queries.json")
