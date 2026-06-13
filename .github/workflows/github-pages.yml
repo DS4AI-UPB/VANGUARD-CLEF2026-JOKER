@@ -1,0 +1,63 @@
+name: Deploy Optimized Plain HTML Site
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1. Automatically compress images (JPG, PNG, SVG)
+      - name: Compress Images
+        uses: calibreapp/image-actions@main
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          compressOnly: true
+
+      # 2. Minify CSS and JS (skip HTML to preserve layout)
+      - name: Minify CSS and JS
+        run: |
+          npm install -g cssnano-cli terser
+          # Minify CSS
+          for file in $(find . -name "*.css" -type f); do
+            npx cssnano "$file" "$file" --no-map
+          done
+          # Minify JS
+          for file in $(find . -name "*.js" -type f ! -name "*.min.js"); do
+            npx terser "$file" -o "$file" --compress --mangle
+          done
+
+      # 3. Setup Pages metadata
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # 4. Upload the optimized files as an artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

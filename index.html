@@ -1,10 +1,590 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="language" content="en" />
 
-</body>
+    <title>IROH: Insightful Ranking Of Humor - JOKER @ CLEF 2026 Task 1 English</title>
+
+    <meta name="description" content="IROH (Insightful Ranking of Humor): a three-stage hybrid retrieval system with rationale-distilled LLM judges, ranked 1st on JOKER 2026 Task 1 English with 0.6347 MAP. Team VANGUARD, CLEF 2026." />
+    <meta name="keywords" content="Humor Retrieval, Information Retrieval, LLM Judge, Rationale Distillation, Cross-Encoder Reranking, Hard Negatives, BM25, BGE, JOKER, CLEF 2026, Wordplay, Puns" />
+    <link rel="canonical" href="https://ds4ai-upb.github.io/VANGUARD-CLEF2026-JOKER/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="IROH: Insightful Ranking Of Humor - JOKER @ CLEF 2026 Task 1 English" />
+    <meta property="og:site_name" content="IROH - VANGUARD" />
+    <meta property="og:description" content="A three-stage hybrid retrieval system with rationale-distilled LLM judges. Ranked 1st on official JOKER 2026 Task 1 English with 0.6347 MAP." />
+    <meta property="og:url" content="https://ds4ai-upb.github.io/VANGUARD-CLEF2026-JOKER/" />
+    <meta property="og:image" content="assets/VANGUARD-IROH-Architecture.png" />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IROH: Insightful Ranking Of Humor - JOKER @ CLEF 2026 Task 1 English" />
+    <meta name="twitter:description" content="A three-stage hybrid retrieval system with rationale-distilled LLM judges. Ranked 1st on official JOKER 2026 Task 1 English with 0.6347 MAP." />
+    <meta name="twitter:image" content="assets/VANGUARD-IROH-Architecture.png" />
+
+    <!-- TODO: Change this after published in proceedinggs -->
+    <!-- <meta name="citation_title" content="IROH: Insightful Ranking Of Humor using Multi-Stage Hybrid Retrieval with Rationale-Distilled LLM Judges for JOKER 2026 Track Task 1 English" />
+    <meta name="citation_author" content="Mocanu, Ana-Maria Luisa" />
+    <meta name="citation_author" content="Mocanu, Sebastian" />
+    <meta name="citation_author" content="Truică, Ciprian-Octavian" />
+    <meta name="citation_author" content="Apostol, Elena-Simona" />
+    <meta name="citation_publication_date" content="2026" />
+    <meta name="citation_conference_title" content="Conference and Labs of the Evaluation Forum (CLEF), JOKER 2026 Track Task 1 English" /> -->
+
+    <!-- TODO: update after published in proceedings -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ScholarlyArticle",
+      "headline": "IROH: Insightful Ranking Of Humor using Multi-Stage Hybrid Retrieval with Rationale-Distilled LLM Judges for JOKER 2026 Track Task 1 English",
+      "author": [
+        { "@type": "Person", "name": "Ana-Maria Luisa Mocanu", "affiliation": "National University of Science and Technology POLITEHNICA Bucharest" },
+        { "@type": "Person", "name": "Sebastian Mocanu", "affiliation": "National University of Science and Technology POLITEHNICA Bucharest" },
+        { "@type": "Person", "name": "Ciprian-Octavian Truică", "affiliation": "National University of Science and Technology POLITEHNICA Bucharest; Academy of Romanian Scientists" },
+        { "@type": "Person", "name": "Elena-Simona Apostol", "affiliation": "National University of Science and Technology POLITEHNICA Bucharest" }
+      ],
+      "datePublished": "2026",
+      "description": "A three-stage retrieval system for humor-aware information retrieval combining hybrid sparse-dense retrieval, cross-encoder reranking, and a weighted ensemble of LoRA-adapted LLM judges. Ranked first on JOKER 2026 Task 1 English with 0.6347 MAP.",
+      "keywords": ["Humor Retrieval", "Information Retrieval", "LLM Judge", "Rationale Distillation", "Cross-Encoder Reranking"],
+      "isPartOf": { "@type": "PublicationEvent", "name": "Conference and Labs of the Evaluation Forum (CLEF) 2026 - JOKER Lab" },
+      "url": "https://ds4ai-upb.github.io/VANGUARD-CLEF2026-JOKER/"
+    }
+    </script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="title">
+      <h1>IROH: Insightful Ranking Of Humor using Multi-Stage Hybrid Retrieval with Rationale-Distilled LLM Judges</h1>
+      <div class="conference">JOKER Lab @ CLEF 2026 &middot; Task 1 English &middot; Team VANGUARD</div>
+      <div class="winner-banner" role="note" aria-label="Ranked first place">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>
+        Ranked 1st on the official leaderboard <span class="map">&middot; 0.6347 MAP</span>
+      </div>
+    </header>
+
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+
+    <nav class="authors" aria-label="Author links">
+      <span class="author">
+        <a href="https://scholar.google.com/citations?user=Kw4_jBMAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" class="author-link">Ana-Maria Luisa Mocanu<sup>1</sup></a>
+        <a href="https://orcid.org/0009-0005-2646-4086" target="_blank" rel="noopener noreferrer" class="orcid-link" aria-label="ORCID profile of Ana-Maria Luisa Mocanu">
+          <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="512" cy="512" r="512" style="fill:#a6ce39"/>
+            <path d="M373.7 709.3h-50.4V358.5h50.4v350.8zm74-350.8h136.2c129.7 0 186.7 92.7 186.7 175.5 0 90.1-70.4 175.5-186 175.5H447.7v-351zm50.4 305.6h80.2c114.3 0 140.5-86.8 140.5-130 0-70.4-44.9-130-143.1-130h-77.6v260zM381.6 285.5c0 18-14.7 33.1-33.1 33.1-18.3 0-33.1-15.1-33.1-33.1 0-18.3 14.7-33.1 33.1-33.1 18.3 0 33.1 15.1 33.1 33.1z" style="fill:#fff"/>
+          </svg>
+        </a>
+      </span>
+      <span class="author">
+        <a href="https://scholar.google.com/citations?user=osyBED4AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" class="author-link">Sebastian Mocanu<sup>1</sup></a>
+        <a href="https://orcid.org/0009-0007-0313-4724" target="_blank" rel="noopener noreferrer" class="orcid-link" aria-label="ORCID profile of Sebastian Mocanu">
+          <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="512" cy="512" r="512" style="fill:#a6ce39"/>
+            <path d="M373.7 709.3h-50.4V358.5h50.4v350.8zm74-350.8h136.2c129.7 0 186.7 92.7 186.7 175.5 0 90.1-70.4 175.5-186 175.5H447.7v-351zm50.4 305.6h80.2c114.3 0 140.5-86.8 140.5-130 0-70.4-44.9-130-143.1-130h-77.6v260zM381.6 285.5c0 18-14.7 33.1-33.1 33.1-18.3 0-33.1-15.1-33.1-33.1 0-18.3 14.7-33.1 33.1-33.1 18.3 0 33.1 15.1 33.1 33.1z" style="fill:#fff"/>
+          </svg>
+        </a>
+      </span>
+      <span class="author">
+        <a href="https://scholar.google.com/citations?user=ZOKqr-QAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" class="author-link">Ciprian-Octavian Truică<sup>1,2</sup></a>
+        <a href="https://orcid.org/0000-0001-7292-4462" target="_blank" rel="noopener noreferrer" class="orcid-link" aria-label="ORCID profile of Ciprian-Octavian Truică">
+          <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="512" cy="512" r="512" style="fill:#a6ce39"/>
+            <path d="M373.7 709.3h-50.4V358.5h50.4v350.8zm74-350.8h136.2c129.7 0 186.7 92.7 186.7 175.5 0 90.1-70.4 175.5-186 175.5H447.7v-351zm50.4 305.6h80.2c114.3 0 140.5-86.8 140.5-130 0-70.4-44.9-130-143.1-130h-77.6v260zM381.6 285.5c0 18-14.7 33.1-33.1 33.1-18.3 0-33.1-15.1-33.1-33.1 0-18.3 14.7-33.1 33.1-33.1 18.3 0 33.1 15.1 33.1 33.1z" style="fill:#fff"/>
+          </svg>
+        </a>
+      </span>
+      <span class="author">
+        <a href="https://scholar.google.com/citations?user=XUZcjpEAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" class="author-link">Elena-Simona Apostol<sup>1</sup></a>
+        <a href="https://orcid.org/0000-0001-6397-4951" target="_blank" rel="noopener noreferrer" class="orcid-link" aria-label="ORCID profile of Elena-Simona Apostol">
+          <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="512" cy="512" r="512" style="fill:#a6ce39"/>
+            <path d="M373.7 709.3h-50.4V358.5h50.4v350.8zm74-350.8h136.2c129.7 0 186.7 92.7 186.7 175.5 0 90.1-70.4 175.5-186 175.5H447.7v-351zm50.4 305.6h80.2c114.3 0 140.5-86.8 140.5-130 0-70.4-44.9-130-143.1-130h-77.6v260zM381.6 285.5c0 18-14.7 33.1-33.1 33.1-18.3 0-33.1-15.1-33.1-33.1 0-18.3 14.7-33.1 33.1-33.1 18.3 0 33.1 15.1 33.1 33.1z" style="fill:#fff"/>
+          </svg>
+        </a>
+      </span>
+    </nav>
+
+    <address class="affiliations">
+      <sup>1</sup>National University of Science and Technology POLITEHNICA Bucharest, Romania<br />
+      <sup>2</sup>Academy of Romanian Scientists, Bucharest, Romania<br />
+    </address>
+
+    <nav class="links" aria-label="Resource links">
+      <a href="https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER" target="_blank" rel="noopener noreferrer" class="disabled" aria-disabled="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        Paper (soon)
+      </a>
+      <a href="https://arxiv.org/abs/WIP" target="_blank" rel="noopener noreferrer" class="disabled" aria-disabled="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        arXiv (soon)
+      </a>
+      <a href="https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        Code
+      </a>
+      <a href="#citation-heading">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        BibTeX
+      </a>
+    </nav>
+
+    <main id="main-content">
+      <!-- OVERVIEW -->
+      <section class="section" aria-labelledby="overview-heading">
+        <h2 id="overview-heading">Overview</h2>
+        <div class="abstract">
+          <p>
+            <strong>IROH</strong> (Insightful Ranking of Humor) is a three-stage retrieval system for
+            <strong>JOKER Task 1 English at Conference and Labs of the Evaluation Forum (CLEF) 2026</strong>. Given a natural-language query describing a humor
+            topic, it retrieves the relevant jokes, puns, and wordplay from a balanced corpus of humorous and
+            non-humorous texts. This is a task that demands awareness of both <strong>semantic relevance</strong>
+            and the <strong>linguistic typology</strong> that makes a text funny.
+          </p>
+          <p>
+            The pipeline pairs hybrid sparse-dense retrieval and cross-encoder reranking with a
+            <strong>LoRA-adapted LLM judge ensemble</strong> trained by <strong>rationale distillation</strong>.
+            It ranks first on the official leaderboard with <strong>0.6347 MAP</strong>.
+          </p>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric"><span class="number">0.6347</span><span class="label">CodaBench MAP</span></div>
+          <div class="metric"><span class="number">1st</span><span class="label">Leaderboard rank</span></div>
+          <div class="metric"><span class="number">3</span><span class="label">Retrieval stages</span></div>
+          <div class="metric"><span class="number">1.8&times;</span><span class="label">over 2025 best run</span></div>
+        </div>
+
+        <figure class="figure-centered figure-full-width">
+          <img src="assets/VANGUARD-IROH-Architecture.png" alt="Overview of the IROH three-stage retrieval pipeline: hybrid sparse-dense retrieval, cross-encoder reranking, and an LLM judge ensemble" loading="lazy" />
+          <figcaption>Figure 1: Overview of the IROH three-stage retrieval pipeline.</figcaption>
+        </figure>
+      </section>
+
+      <!-- CONTRIBUTIONS -->
+      <section class="section" aria-labelledby="contributions-heading">
+        <h2 id="contributions-heading">Motivation &amp; Contributions</h2>
+        <div class="abstract">
+          <p>
+            <strong>Challenge:</strong> Humor is ambiguous, culturally loaded, ironic, or carried by tone alone.
+            The JOKER 2024 and 2025 tracks showed that standard retrieval pipelines fail when both topical
+            relevance <em>and</em> humor are required. Prior leading approaches relied on post-hoc filtering or
+            zero-shot LLM classification.
+          </p>
+          <p>
+            <strong>Our solution:</strong> A three-stage pipeline driven by a finetuned, humor-aware LLM judge,
+            with training data built by distilling query-aware rationales and structured hard negatives from
+            Gemma&nbsp;4.
+          </p>
+        </div>
+
+        <div class="key-contributions">
+          <h3>Key Contributions</h3>
+          <ul>
+            <li><strong>Rationale distillation under two prompt strategies:</strong> a lightweight <em>generic</em> pipeline and a structured <em>typed</em> pipeline. We show the simpler generic variant outperforms the richer typed one.</li>
+            <li><strong>Empirical study of structured hard negatives:</strong> augmentation inflates local-validation scores while degrading official performance in nearly every configuration, an effect we attribute to distribution shift.</li>
+            <li><strong>Extensive ablation:</strong> across components, model calibration and training-data composition matter at least as much as raw model capacity. The lighter model matches or beats its larger counterpart.</li>
+            <li><strong>Pipeline configuration analysis:</strong> candidate-pool size governs recall depth, the CE/judge blend weight is a secondary knob, and the judge is the dominant top-rank signal.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- APPROACH -->
+      <section class="section" aria-labelledby="approach-heading">
+        <h2 id="approach-heading">Our Approach</h2>
+        <p>
+          IROH processes a natural-language query against a corpus of candidate documents enriched with generated
+          rationales. Scores are carried forward across stages and fused via weighted linear interpolation of
+          min-max normalised signals, so each stage refines rather than discards the previous one.
+        </p>
+
+        <div class="stage-list">
+          <div class="stage-row">
+            <span class="stage-badge">1</span>
+            <div class="stage-body">
+              <h4>Hybrid Sparse-Dense Retrieval</h4>
+              <p>
+                BM25 with query expansion is fused with BGE dense embeddings (<span class="mono">bge-base-en-v1.5</span>)
+                via Reciprocal Rank Fusion (RRF) to cast a wide first-stage net of the top
+                <span class="mono">k&#8321; = 4000</span> candidates, carrying the RRF score forward.
+              </p>
+            </div>
+          </div>
+          <div class="stage-row">
+            <span class="stage-badge">2</span>
+            <div class="stage-body">
+              <h4>Cross-Encoder Reranking</h4>
+              <p>
+                A finetuned <span class="mono">GTE-Reranker-ModernBERT-Base</span> cross-encoder rescores the
+                candidates and is blended with the carried-forward RRF score, yielding the top
+                <span class="mono">k&#8322; = 1000</span> candidates.
+              </p>
+            </div>
+          </div>
+          <div class="stage-row">
+            <span class="stage-badge">3</span>
+            <div class="stage-body">
+              <h4>LLM Judge Ensemble</h4>
+              <p>
+                Three LoRA-adapted judges with one Qwen2.5-7B (QLoRA, r=64) and two Gemma-4-31B variants (QLoRA, r = 32)
+                finetuned on generic and typed rationales. These judges emit soft YES/NO scores combined by weighted voting
+                (Qwen 0.60, Gemma-generic 0.30, Gemma-typed 0.10) into the final ranking of
+                <span class="mono">k&#8323; = 1000</span> documents.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <h3>Rationale Distillation</h3>
+        <p>
+          Because LLMs struggle to learn humor from labels alone, Gemma&nbsp;4 generates a one-sentence,
+          query-aware rationale for each query-document pair explaining why a text is or is not a relevant joke.
+          For example, for the Tom Swifty
+          <em>&ldquo;I bought myself fifty hamburgers, and I&rsquo;ve only ten left,&rdquo; said Tom with fortitude.</em>,
+          the model explains the pun arises from misapplying &ldquo;fortitude&rdquo; (courage) to a quantitative
+          statement.
+        </p>
+
+        <div class="two-column">
+          <div class="info-box">
+            <h4>Generic strategy</h4>
+            <p style="font-size:0.95em; line-height:1.6; margin:0;">
+              Uses a <span class="mono">&ldquo;General Wordplay&rdquo;</span> placeholder as query context for every
+              example, keeping prompts lightweight. Generates <strong>three</strong> hard-negative types: literal
+              rewrites, defused jokes, and wrong-topic jokes.
+            </p>
+          </div>
+          <div class="info-box">
+            <h4>Typed strategy</h4>
+            <p style="font-size:0.95em; line-height:1.6; margin:0;">
+              Retrieves the actual query text and enumerates seven humor mechanisms (homophonic / homographic /
+              compound puns, Tom Swifties, double entendres, malapropisms, ironic twists). Adds a
+              <strong>fourth</strong> negative type: near-miss puns.
+            </p>
+          </div>
+        </div>
+        <p class="italic">
+          Both pipelines mirror positive and negative rationales so the judge sees a symmetric supervision signal.
+        </p>
+      </section>
+
+      <!-- DATA ANALYSIS -->
+      <section class="section" aria-labelledby="data-heading">
+        <h2 id="data-heading">Data Analysis</h2>
+        <p>
+          The JOKER Task 1 corpus consists of short English texts with binary relevance judgments. We combine the
+          2025 and 2026 editions, deduplicate recurring documents, and build a balanced set of jokes (label&nbsp;1)
+          and non-jokes (label&nbsp;0). Surface features are useful but insufficient: punctuation density is the
+          strongest single correlate of the label (<span class="mono">r = 0.47</span>), followed by quote presence
+          and word count. The remaining difficulty lies in subtle, context-dependent wordplay no single feature
+          captures.
+        </p>
+
+        <div class="table-responsive">
+          <table class="results-table" style="min-width:600px;">
+            <caption class="sr-only">Linguistic feature statistics by label</caption>
+            <thead>
+              <tr>
+                <th rowspan="2" scope="col">Feature</th>
+                <th colspan="2" scope="colgroup">Joke (1)</th>
+                <th colspan="2" scope="colgroup">Non-Joke (0)</th>
+              </tr>
+              <tr>
+                <th scope="col">Mean</th>
+                <th scope="col">Std</th>
+                <th scope="col">Mean</th>
+                <th scope="col">Std</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Word count</td><td>10.55</td><td>4.97</td><td>18.89</td><td>17.71</td></tr>
+              <tr><td>Avg. word length</td><td>5.76</td><td>0.85</td><td>6.05</td><td>0.80</td></tr>
+              <tr><td>Punctuation density</td><td>0.424</td><td>0.303</td><td>0.179</td><td>0.118</td></tr>
+              <tr><td>Has quotes (%)</td><td>56.2</td><td>-</td><td>17.4</td><td>-</td></tr>
+              <tr><td>Question marks</td><td>0.126</td><td>0.337</td><td>0.072</td><td>0.258</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          Table 1. Linguistic feature statistics by label. Jokes are markedly shorter and far more dialogue-heavy
+          (more quotes and punctuation) than non-jokes, but no surface feature alone separates the two classes.
+        </p>
+      </section>
+
+      <!-- RESULTS -->
+      <section class="section" aria-labelledby="results-heading">
+        <h2 id="results-heading">Results</h2>
+        <p>
+          IROH reaches <strong>0.6347 MAP</strong>, a substantial advance over prior editions of the task. The
+          corpus expanded across editions, so these figures are indicative of progress rather than a strictly
+          controlled benchmark.
+        </p>
+
+        <div class="table-responsive">
+          <table class="results-table" style="min-width:600px;">
+            <caption class="sr-only">Comparison against prior JOKER Task 1 English systems</caption>
+            <thead>
+              <tr>
+                <th scope="col">System</th>
+                <th scope="col">JOKER edition</th>
+                <th scope="col">MAP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Best official run, Task 1 English</td><td>2024 Task 1</td><td>0.12</td></tr>
+              <tr><td>Best English run (Qwen filter-explainer)</td><td>2025</td><td>0.3501</td></tr>
+              <tr class="highlight-row"><td><strong>IROH (ours), Task 1 English</strong></td><td><strong>2026</strong></td><td><strong>0.6347</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption-center">Table 2. Progress on JOKER Task 1 English across editions.</p>
+
+        <h3>Our Findings</h3>
+        <div class="findings-grid">
+          <div class="finding-card">
+            <span class="finding-number">1</span>
+            <h4>The judge is the dominant signal</h4>
+            <p>The rationale-distilled LLM judge drives ranking quality. Appending rationales to the first-stage BM25 index has a negligible effect (0.2876 vs. 0.2868 MAP without the judge).</p>
+          </div>
+          <div class="finding-card">
+            <span class="finding-number">2</span>
+            <h4>Structured hard negatives hurt generalisation</h4>
+            <p>Augmentation inflates local-validation scores but degrades official performance in nearly every configuration given by a distribution-shift effect between the local split and the broader task.</p>
+          </div>
+          <div class="finding-card">
+            <span class="finding-number">3</span>
+            <h4>Lighter, better-calibrated models win</h4>
+            <p>The Qwen2.5-7B judge on generic rationales (0.6055 MAP) beats every Gemma-4-31B configuration, and <span class="mono">bge-base-en-v1.5</span> (768-dim) outperforms <span class="mono">bge-en-icl</span> (4096-dim) inside the full pipeline.</p>
+          </div>
+          <div class="finding-card">
+            <span class="finding-number">4</span>
+            <h4>Generic rationales are better</h4>
+            <p>The simpler generic prompt produces more consistent supervision than the structured typed prompt, with the advantage concentrated in the smaller model.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABLATIONS -->
+      <section class="section" aria-labelledby="ablation-heading">
+        <h2 id="ablation-heading">Ablation Studies</h2>
+        <p>
+          We report official CodaBench MAP throughout, computed with <span class="mono">pytrec_eval</span> over the
+          full corpus. A held-out 20% query split is used only for training-time model selection.
+        </p>
+
+        <h3>Cross-Encoder Comparison</h3>
+        <div class="table-responsive">
+          <table class="results-table" style="min-width:600px;">
+            <caption class="sr-only">Cross-encoder comparison with and without augmentation</caption>
+            <thead>
+              <tr><th scope="col">Model</th><th scope="col">Augmentation</th><th scope="col">CodaBench MAP</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>MiniLM-L-6</td><td>True</td><td>0.1793</td></tr>
+              <tr><td>MiniLM-L-6</td><td>False</td><td>0.2215</td></tr>
+              <tr><td>BGE-Reranker-Base</td><td>True</td><td>0.1229</td></tr>
+              <tr><td>BGE-Reranker-Base</td><td>False</td><td>0.0733</td></tr>
+              <tr><td>GTE-Reranker-ModernBERT-Base</td><td>True</td><td>0.2597</td></tr>
+              <tr class="highlight-row"><td><strong>GTE-Reranker-ModernBERT-Base</strong></td><td><strong>False</strong></td><td><strong>0.2843</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          Table 3. Augmentation degrades the two strongest backbones. We adopt GTE-Reranker-ModernBERT-Base without
+          augmentation as the Stage&nbsp;2 cross-encoder.
+        </p>
+
+        <h3>Dense Embedder Comparison</h3>
+        <div class="table-responsive">
+          <table class="results-table" style="min-width:600px;">
+            <caption class="sr-only">Dense embedder comparison</caption>
+            <thead>
+              <tr><th scope="col">Model</th><th scope="col">Dimension</th><th scope="col">CodaBench MAP</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>bge-base-en-v1.5</td><td>768</td><td>0.2843</td></tr>
+              <tr><td>bge-large-en-v1.5</td><td>1024</td><td>0.2823</td></tr>
+              <tr><td>bge-m3</td><td>1024</td><td>0.2634</td></tr>
+              <tr><td>bge-en-icl</td><td>4096</td><td>0.3290</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          Table 4. <span class="mono">bge-en-icl</span> wins in isolation but at far higher cost (a 7B-parameter
+          embedder); the smaller <span class="mono">bge-base-en-v1.5</span> achieves higher MAP once paired with the
+          full judge pipeline, so we select it.
+        </p>
+
+        <h3>Judge Comparison</h3>
+        <div class="table-responsive">
+          <table class="results-table" style="min-width:600px;">
+            <caption class="sr-only">Judge model comparison across data variants</caption>
+            <thead>
+              <tr><th scope="col">Model</th><th scope="col">Data</th><th scope="col">LoRA r</th><th scope="col">MAP</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Qwen2.5-7B</td><td>typed</td><td>64</td><td>0.4933</td></tr>
+              <tr><td>Qwen2.5-7B</td><td>typed + aug</td><td>64</td><td>0.2987</td></tr>
+              <tr class="highlight-row"><td><strong>Qwen2.5-7B</strong></td><td><strong>generic</strong></td><td><strong>64</strong></td><td><strong>0.6055</strong></td></tr>
+              <tr><td>Qwen2.5-7B</td><td>generic + aug</td><td>64</td><td>0.4994</td></tr>
+              <tr><td>Gemma-4-31B</td><td>typed</td><td>32</td><td>0.5740</td></tr>
+              <tr><td>Gemma-4-31B</td><td>typed + aug</td><td>32</td><td>0.4538</td></tr>
+              <tr><td>Gemma-4-31B</td><td>generic</td><td>32</td><td>0.5718</td></tr>
+              <tr><td>Gemma-4-31B</td><td>generic + aug</td><td>32</td><td>0.4267</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          Table 5. Augmentation consistently degrades performance and generic rationales beat typed for both judges.
+          The smaller Qwen2.5-7B on generic rationales achieves the best single-judge MAP (0.6055), ahead of every
+          Gemma-4-31B configuration, though Gemma is the stronger model per-variant on typed rationales.
+        </p>
+      </section>
+
+      <!-- CONFIG -->
+      <section class="section" aria-labelledby="config-heading">
+        <h2 id="config-heading">Final Submission Configuration</h2>
+        <div class="table-responsive">
+          <table class="config-table">
+            <caption class="sr-only">Final submission configuration</caption>
+            <thead>
+              <tr><th scope="col">Knob</th><th scope="col">Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Dense embedder</td><td>bge-base-en-v1.5</td></tr>
+              <tr><td>Cross-encoder</td><td>GTE-Reranker-ModernBERT-Base (no augmentation)</td></tr>
+              <tr><td>Pool sizes</td><td>k&#8321; = 4000, k&#8322; = 1000, k&#8323; = 1000</td></tr>
+              <tr><td>CE / judge blend</td><td>0.30 / 0.70</td></tr>
+              <tr><td>Ensemble weights</td><td>Qwen 0.60, Gemma-generic 0.30, Gemma-typed 0.10</td></tr>
+              <tr><td>Penalty</td><td>&tau; = 0.30, &lambda; = 0.85 (no measurable effect)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box">
+          <h4>Hardware</h4>
+          <ul class="compact-list">
+            <li><strong>Judge finetuning (QLoRA):</strong> NVIDIA A100 80GB</li>
+            <li><strong>Cross-encoder finetuning:</strong> NVIDIA RTX 4090</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- LIMITATIONS -->
+      <section class="section" aria-labelledby="limitations-heading">
+        <h2 id="limitations-heading">Limitations</h2>
+        <div class="findings-grid">
+          <div class="finding-card">
+            <h4>English-only</h4>
+            <p>Prompts, the humor mechanism taxonomy, and all finetuned components are English-only. Transfer to the other JOKER Task 1 languages would require retraining.</p>
+          </div>
+          <div class="finding-card">
+            <h4>Binary judge</h4>
+            <p>The YES/NO verdict forces a hard decision on what is arguably a relevance spectrum. Training on graded judgments could yield better-calibrated judge outputs.</p>
+          </div>
+          <div class="finding-card">
+            <h4>Rationale ceiling</h4>
+            <p>Rationales are accurate for clear wordplay but turn generic for culturally loaded or multi-layered humor, capping the supervision signal in exactly those cases.</p>
+          </div>
+          <div class="finding-card">
+            <h4>Compute cost</h4>
+            <p>The full pipeline needs multiple hours on multiple GPUs, and CodaBench submission limits forced OFAT sweeps in place of principled grid search for several components.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="section" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact &amp; Acknowledgements</h2>
+        <div id="contact">
+          <p>
+            For questions and collaboration inquiries, please reach the authors through the
+            <a href="https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+            or academic channels.
+          </p>
+        </div>
+        <div class="ack-container">
+          <p class="table-caption">
+            The research presented in this paper is supported in part by The Academy of Romanian Scientists, through
+            the funding of the project &ldquo;NetGuardAI: Intelligent system for harmful content detection and
+            immunization on social networks&rdquo; (AOȘR-TEAMS-IV).
+          </p>
+        </div>
+      </section>
+
+      <!-- CITATION -->
+      <section class="section" aria-labelledby="citation-heading">
+        <h2 id="citation-heading">Citation (Placeholder until the official proceedings entry is available)</h2>
+        <div class="citation-container citation">
+          <button id="copy-citation-button" class="copy-button" type="button" aria-label="Copy citation to clipboard">
+            <svg class="icon-copy" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+          <pre aria-label="BibTeX citation"><code class="language-bibtex" id="language-bibtex" lang="language-bibtex">@InProceedings{Ana_Maria_Luisa_Mocanu_2026_IROH_CLEF,
+    author    = {Mocanu, Ana-Maria Luisa and Mocanu, Sebastian and Truică, Ciprian-Octavian and Apostol, Elena-Simona},
+    title     = {IROH: Insightful Ranking Of Humor using Multi-Stage Hybrid Retrieval with Rationale-Distilled LLM Judges for JOKER 2026 Track Task 1 English},
+    booktitle = {Conference and Labs of the Evaluation Forum (CLEF), Joker 2026 Track Task 1 English},
+    month     = {June},
+    year      = {2026}
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Ana-Maria Luisa Mocanu, Sebastian Mocanu, Ciprian-Octavian Truică and Elena-Simona Apostol</p>
+      <p>JOKER Lab @ CLEF 2026 &middot; Task 1 English &middot; Team VANGUARD &middot; <a href="https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER" target="_blank" rel="noopener noreferrer">Project repository</a> &middot; <a href="https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER/tree/gh-pages" target="_blank" rel="noopener noreferrer">Website repository</a></p>
+    </footer>
+
+    <button id="scroll-top-button" title="Go to top" aria-label="Scroll to top">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+
+    <div id="image-lightbox" class="lightbox">
+      <span class="lightbox-close">&times;</span>
+      <img class="lightbox-content" id="lightbox-img" alt="Enlarged view" />
+      <div id="lightbox-caption"></div>
+    </div>
+
+    <nav id="side-nav" class="side-nav" aria-label="Section navigation">
+      <ul>
+        <li><a href="#overview-heading" data-section="overview-heading" aria-label="Overview"><span class="tooltip">Overview</span></a></li>
+        <li><a href="#contributions-heading" data-section="contributions-heading" aria-label="Contributions"><span class="tooltip">Contributions</span></a></li>
+        <li><a href="#approach-heading" data-section="approach-heading" aria-label="Approach"><span class="tooltip">Approach</span></a></li>
+        <li><a href="#data-heading" data-section="data-heading" aria-label="Data Analysis"><span class="tooltip">Data Analysis</span></a></li>
+        <li><a href="#results-heading" data-section="results-heading" aria-label="Results"><span class="tooltip">Results</span></a></li>
+        <li><a href="#ablation-heading" data-section="ablation-heading" aria-label="Ablations"><span class="tooltip">Ablations</span></a></li>
+        <li><a href="#config-heading" data-section="config-heading" aria-label="Configuration"><span class="tooltip">Configuration</span></a></li>
+        <li><a href="#limitations-heading" data-section="limitations-heading" aria-label="Limitations"><span class="tooltip">Limitations</span></a></li>
+        <li><a href="#citation-heading" data-section="citation-heading" aria-label="Citation"><span class="tooltip">Contact &amp; Citation</span></a></li>
+      </ul>
+    </nav>
+
+    <script src="app.js" type="text/javascript"></script>
+  </body>
 </html>
