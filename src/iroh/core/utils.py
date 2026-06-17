@@ -11,8 +11,8 @@ import numpy as np
 import torch
 from nltk.stem import PorterStemmer
 
-from config import SEED, STOP_WORDS
-from path_manager import PathManager
+from iroh.core.config import SEED, STOP_WORDS
+from iroh.core.path_manager import PathManager
 
 _stemmer = PorterStemmer()
 EARLY_STOP_SENTINEL = "early_stopped.flag"
@@ -336,7 +336,7 @@ def evaluate_trec(
 ) -> dict[str, float]:
     """Evaluate a submission against qrels using pytrec_eval."""
     if metrics is None:
-        from config import EVAL_METRICS
+        from iroh.core.config import EVAL_METRICS
         metrics = EVAL_METRICS
 
     try:

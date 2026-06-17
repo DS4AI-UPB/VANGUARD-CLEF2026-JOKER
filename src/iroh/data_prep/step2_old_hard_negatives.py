@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import ollama
 
-from path_manager import PathManager
+from iroh.core.path_manager import PathManager
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', default='gemma4:e4b', help='Ollama model name')
@@ -19,7 +19,7 @@ parser.add_argument('--skip-defused', action='store_true', help='Skip defused jo
 parser.add_argument('--skip-wrong-topic', action='store_true', help='Skip wrong-topic joke generation')
 args = parser.parse_args()
 
-os.makedirs('data', exist_ok=True)
+os.makedirs(PathManager.DATA_DIR, exist_ok=True)
 
 
 def ollama_generate(prompt, model):

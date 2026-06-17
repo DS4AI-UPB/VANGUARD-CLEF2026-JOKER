@@ -7,10 +7,12 @@ import pandas as pd
 import torch
 from sentence_transformers import CrossEncoder
 
-from config import CE_CANDIDATES, JUDGE_CANDIDATES, JUDGE_BASE_MODEL, USE_EXPANDED_BM25, ensure_dirs
-from path_manager import PathManager
-from pipeline import build_bm25_index, load_dense_embeddings, run_pipeline, precompute_stage1, CorpusData, JudgeData
-from utils import (
+from iroh.core.config import CE_CANDIDATES, JUDGE_CANDIDATES, JUDGE_BASE_MODEL, USE_EXPANDED_BM25, ensure_dirs
+from iroh.core.path_manager import PathManager
+from iroh.core.pipeline import (
+    build_bm25_index, load_dense_embeddings, run_pipeline, precompute_stage1, CorpusData, JudgeData
+)
+from iroh.core.utils import (
     seed_everything, load_json,
     load_judge_model, evaluate_trec, free_gpu,
     load_corpus, build_qrel_dict, load_humor_prior,

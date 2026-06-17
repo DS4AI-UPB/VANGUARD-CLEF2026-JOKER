@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import ollama
 
-from path_manager import PathManager
+from iroh.core.path_manager import PathManager
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', default='gemma4:e4b', help='Ollama model name')
@@ -16,7 +16,7 @@ parser.add_argument('--input', default=os.path.join(PathManager.DATA_DIR, 'proce
 parser.add_argument('--output', default=os.path.join(PathManager.DATA_DIR, 'temp_step1_rationales.json'))
 args = parser.parse_args()
 
-os.makedirs('data', exist_ok=True)
+os.makedirs(PathManager.DATA_DIR, exist_ok=True)
 
 
 def load_input(path):

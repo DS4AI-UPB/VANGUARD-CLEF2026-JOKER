@@ -2,7 +2,7 @@ import json
 import os
 import sys
 
-from path_manager import PathManager
+from iroh.core.path_manager import PathManager
 
 FILE_PAIRS = [
     ("temp_step1_rationales.json", "temp_step1_rationales.json"),

@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import ollama
 
-from path_manager import PathManager
+from iroh.core.path_manager import PathManager
 
 
 def parse_args():

@@ -5,9 +5,9 @@ import time
 
 import torch
 
-from config import CORPUS_EMB_CACHE, DENSE_MODEL, ensure_dirs
-from path_manager import PathManager
-from utils import load_corpus, seed_everything
+from iroh.core.config import CORPUS_EMB_CACHE, DENSE_MODEL, ensure_dirs
+from iroh.core.path_manager import PathManager
+from iroh.core.utils import load_corpus, seed_everything
 
 
 def main():

@@ -9,7 +9,7 @@ from difflib import SequenceMatcher
 
 import ollama
 
-from path_manager import PathManager
+from iroh.core.path_manager import PathManager
 
 
 def parse_args():

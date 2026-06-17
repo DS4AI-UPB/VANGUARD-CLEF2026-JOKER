@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
 import os
+from pathlib import Path
 
-from path_manager import PathManager
+from iroh.core.path_manager import PathManager
 
 os.environ["PYTHONUTF8"] = "1"
 import sys
@@ -23,6 +23,12 @@ STAGES = {
     9: "CodaBench Top-N Submissions",
     10: "Ensemble Weight Ablation",
 }
+
+_RUNNABLE = Path(__file__).resolve().parent
+
+
+def _script(name: str) -> str:
+    return str(_RUNNABLE / name)
 
 
 def ts():
@@ -82,7 +88,7 @@ def check_gpu():
 
 def check_data_files(base_dir):
     """Verify required data files exist."""
-    data_dir = os.path.join(base_dir, "data")
+    data_dir = str(PathManager.DATA_DIR)
     required = [
         ("joker_task1_retrieval_corpus26_english.json", True),
         ("joker_task1_retrieval_queries_test26_english.json", True),
@@ -125,7 +131,7 @@ def check_data_files(base_dir):
 def stage_1(args, base_dir):
     """Data processing - corpus, balanced sampling, splits, analysis plots."""
     return run(
-        [sys.executable, "data_processing.py", "--plots"],
+        [sys.executable, _script("data_processing.py"), "--plots"],
         "Data processing + analysis plots",
         args.dry_run,
     )
@@ -134,7 +140,7 @@ def stage_1(args, base_dir):
 def stage_2(args, base_dir):
     """Train cross-encoders - 6 configs (3 architectures x ±aug on new data, Table 2 in paper)."""
     return run(
-        [sys.executable, "train_cross_encoder.py"],
+        [sys.executable, _script("train_cross_encoder.py")],
         "Train cross-encoders (MiniLM-L6, BGE-Reranker-Base, GTE-Reranker-ModernBERT-Base x ±aug)",
         args.dry_run,
     )
@@ -142,7 +148,7 @@ def stage_2(args, base_dir):
 
 def stage_3(args, base_dir):
     """Train judges - Qwen2.5-7B + Gemma 4-31B QLoRA, 8 configs (Table 4 in paper)."""
-    cmd = [sys.executable, "train_judge_gemma4.py"]
+    cmd = [sys.executable, _script("train_judge_gemma4.py")]
     if getattr(args, "gemma_only", False):
         cmd.append("--gemma")
         desc = "Train judges (Gemma 4 31B x 4 configs: new/new_aug/old/old_aug)"
@@ -157,7 +163,7 @@ def stage_3(args, base_dir):
 def stage_4(args, base_dir):
     """Score entire corpus with humor prior."""
     return run(
-        [sys.executable, "score_corpus_humor.py"],
+        [sys.executable, _script("score_corpus_humor.py")],
         "Score corpus humor prior (full corpus inference)",
         args.dry_run,
     )
@@ -166,7 +172,7 @@ def stage_4(args, base_dir):
 def stage_5(args, base_dir):
     """Precompute dense embeddings - cache on CPU before pipeline runs."""
     return run(
-        [sys.executable, "precompute_embeddings.py"],
+        [sys.executable, _script("precompute_embeddings.py")],
         "Precompute corpus embeddings (cached to CPU)",
         args.dry_run,
     )
@@ -174,7 +180,7 @@ def stage_5(args, base_dir):
 
 def stage_6(args, base_dir):
     """Local evaluation - pipeline on held-out test split."""
-    cmd = [sys.executable, "pipeline.py", "--results-subdir", "eval"]
+    cmd = [sys.executable, _script("pipeline.py"), "--results-subdir", "eval"]
     if getattr(args, "no_judge", False):
         cmd.append("--no-judge")
     return run(
@@ -187,7 +193,7 @@ def stage_6(args, base_dir):
 def stage_7(args, base_dir):
     """Ablation study - all CE x Judge combinations."""
     return run(
-        [sys.executable, "ablation.py"],
+        [sys.executable, _script("ablation.py")],
         "Ablation study (all CE x Judge combinations)",
         args.dry_run,
     )
@@ -196,7 +202,7 @@ def stage_7(args, base_dir):
 def stage_8(args, base_dir):
     """Generate evaluation plots."""
     return run(
-        [sys.executable, "evaluate_plots.py"],
+        [sys.executable, _script("evaluate_plots.py")],
         "Generate publication plots",
         args.dry_run,
     )
@@ -205,7 +211,7 @@ def stage_8(args, base_dir):
 def stage_9(args, base_dir):
     """CodaBench top-N submissions - top configs from ablation -> full test queries."""
     top_n = getattr(args, "top_n", 30)
-    cmd = [sys.executable, "pipeline.py", "--top-n", str(top_n),
+    cmd = [sys.executable, _script("pipeline.py"), "--top-n", str(top_n),
            "--results-subdir", "top_submissions"]
     if getattr(args, "no_judge", False):
         cmd.append("--no-judge")
@@ -242,7 +248,7 @@ def stage_9(args, base_dir):
 
 def stage_10(args, base_dir):
     """Ensemble weight ablation - sweep Qwen/Gemma weights and CE/Judge blends."""
-    cmd = [sys.executable, "ensemble_ablation.py"]
+    cmd = [sys.executable, _script("ensemble_ablation.py")]
     if getattr(args, "blend_only", False):
         cmd.append("--blend-only")
     if getattr(args, "no_save_ens", False):
@@ -338,6 +344,10 @@ Examples:
     parser.add_argument("--stage1-ver", default=None, help="Stage 10: stage-1 cache version tag (default: v5)")
     parser.add_argument("--ce-ver", default=None, help="Stage 10: CE cache version tag (default: v5)")
     parser.add_argument("--judge-ver", default=None, help="Stage 10: judge-prob cache version tag (default: v6)")
+    parser.add_argument(
+        "--e4b", action="store_true",
+        help="Log the run as using the lightweight Gemma 4 E4B judge variant (informational only)."
+    )
     return parser.parse_args()
 
 

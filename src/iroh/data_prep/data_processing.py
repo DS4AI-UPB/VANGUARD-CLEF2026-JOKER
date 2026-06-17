@@ -10,9 +10,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from config import ensure_dirs
-from path_manager import PathManager
-from utils import seed_everything, load_json, save_json
+from iroh.core.config import ensure_dirs
+from iroh.core.path_manager import PathManager
+from iroh.core.utils import seed_everything, load_json, save_json
 
 LOCAL_TRAIN_QRELS = os.path.join(PathManager.DATA_DIR, "local_train_qrels.json")
 

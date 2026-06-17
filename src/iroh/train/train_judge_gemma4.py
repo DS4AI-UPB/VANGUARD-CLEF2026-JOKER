@@ -11,15 +11,17 @@ from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainerCallback, EarlyStoppingCallback
 from trl import SFTTrainer, SFTConfig
 
-from config import (
+from iroh.core.config import (
     SEED, JUDGE_BASE_MODEL, JUDGE_LORA_R, JUDGE_LORA_ALPHA,
     JUDGE_MAX_LENGTH, JUDGE_LORA_TARGETS,
     JUDGE_SYSTEM_PROMPT, JUDGE_TRAIN_CONFIGS,
     JUDGE_GEMMA_31B_CONFIGS, JUDGE_QWEN7B_CONFIGS,
     ensure_dirs,
 )
-from path_manager import PathManager
-from utils import seed_everything, get_yes_no_ids, load_data_for_config, check_training_status, mark_early_stopped
+from iroh.core.path_manager import PathManager
+from iroh.core.utils import (
+    seed_everything, get_yes_no_ids, load_data_for_config, check_training_status, mark_early_stopped
+)
 
 
 class MetricsRecorder(TrainerCallback):

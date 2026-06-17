@@ -7,8 +7,8 @@ from itertools import product
 
 import pandas as pd
 
-from config import ensure_dirs
-from path_manager import PathManager
+from iroh.core.config import ensure_dirs
+from iroh.core.path_manager import PathManager
 
 DEFAULT_CE_NAME = "CE_GTE_new"
 DEFAULT_STAGE1_VER = "v5"

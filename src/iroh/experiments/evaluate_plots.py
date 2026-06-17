@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from config import ensure_dirs
-from path_manager import PathManager
-from utils import apply_plot_style
+from iroh.core.config import ensure_dirs
+from iroh.core.path_manager import PathManager
+from iroh.core.utils import apply_plot_style
 
 COL_MAP = "MAP"
 COL_NDCG10 = "NDCG@10"

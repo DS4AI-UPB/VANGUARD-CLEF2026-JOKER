@@ -12,7 +12,7 @@ import torch
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer, CrossEncoder, util
 
-from config import (
+from iroh.core.config import (
     CORPUS_EMB_CACHE,
     DENSE_MODEL,
     CE_CANDIDATES, JUDGE_CANDIDATES, JUDGE_BASE_MODEL,
@@ -26,8 +26,8 @@ from config import (
     STAGE3_TOPK, CE_WEIGHT, JUDGE_WEIGHT, JUDGE_THRESHOLD,
     ensure_dirs,
 )
-from path_manager import PathManager
-from utils import (
+from iroh.core.path_manager import PathManager
+from iroh.core.utils import (
     seed_everything, load_json, save_json,
     tokenize_stemmed, expand_query,
     find_best_model, load_judge_model,

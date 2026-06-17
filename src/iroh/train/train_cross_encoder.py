@@ -16,9 +16,9 @@ from sentence_transformers import CrossEncoder, InputExample
 from sklearn.metrics import mean_squared_error, roc_auc_score
 from torch.utils.data import DataLoader
 
-from config import CE_BASE_MODEL, CE_TRAIN_CONFIGS, ensure_dirs
-from path_manager import PathManager
-from utils import seed_everything, load_json, load_data_for_config, check_training_status, mark_early_stopped
+from iroh.core.config import CE_BASE_MODEL, CE_TRAIN_CONFIGS, ensure_dirs
+from iroh.core.path_manager import PathManager
+from iroh.core.utils import seed_everything, load_json, load_data_for_config, check_training_status, mark_early_stopped
 
 
 def get_query_positives(data: list[dict]) -> dict[str, list[str]]:

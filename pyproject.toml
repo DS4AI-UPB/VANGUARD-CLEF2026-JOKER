@@ -1,9 +1,25 @@
 [project]
-name = "data"
+name = "iroh"
 version = "0.1.0"
-description = ""
+description = "IROH: Insightful Ranking of Humor, multi-stage hybrid retrieval with rationale-distilled LLM judges for JOKER 2026 Task 1 English (CLEF)."
 readme = "README.md"
 requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "Ana-Maria Luisa Mocanu", email = "m.mogoase23@gmail.com" },
+    { name = "Sebastian Mocanu", email = "sebastian.mocanu31@gmail.com" },
+    { name = "Ciprian-Octavian Truică", email = "ciprian.truica@upb.ro" },
+    { name = "Elena-Simona Apostol", email = "elena.apostol@upb.ro" }
+]
+keywords = ["nlp", "humor-retrieval", "information-retrieval", "reranking", "llm-judge", "clef", "joker"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Os Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
 dependencies = [
     "accelerate>=1.13.0",
     "aiohappyeyeballs>=2.6.1",
@@ -163,3 +179,50 @@ dependencies = [
     "yarl>=1.23.0",
     "zstandard>=0.25.0",
 ]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.20.2",
+    "ruff>=0.15.11"
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.20.2",
+    "ruff>=0.15.11",
+]
+
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+exclude = ["tests", "venv", "env", ".venv", ".env", "data"]
+strict = true
+
+[tool.ruff]
+target-version = "py312"
+exclude = ["tests", "venv", "env", ".venv", ".env", "data"]
+force-exclude = true
+line-length = 120
+lint.select = ["A", "B", "E", "F", "G", "I", "N", "C4", "T10", "UP", "W", "PL", "RUF", "DOC", "PGH004"]
+lint.ignore = [
+    "I001", # PyCharm uses something else for imports
+    "RUF012",
+    "UP015",
+    "PLW2901",
+]
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$" # allow unused variables when underscore-prefixed.
+format.quote-style = "double"
+format.indent-style = "space"
+format.docstring-code-format = true
+analyze.detect-string-imports = true

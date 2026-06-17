@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 class PathManager:
-    BASE = Path(__file__).resolve().parent
+    BASE = Path(__file__).resolve().parent.parent.parent.parent
     DATA_DIR = os.path.join(BASE, "data")
     MODELS_DIR = os.path.join(BASE, "models")
     RESULTS_DIR = os.path.join(BASE, "results")

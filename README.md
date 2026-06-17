@@ -78,7 +78,11 @@ uv sync
 Or use pip in a virtual environment:
 ```bash
 python -m pip install install -r requirements.txt
+
+python -m pip install -e . # needed to run scripts in runnable/
 ```
+
+Either command installs `iroh` (from `src/`) in editable mode, so the package is importable and the entry points in `runnable/` work from anywhere.
 
 Rationale/negative generation (Steps 1–2) needs a local **[Ollama](https://ollama.com/)** server with the Gemma 4 model pulled:
 
@@ -100,32 +104,37 @@ We use official JOKER files in `data/` combining the 2025 and 2026 editions and 
 
 **They are not provided in this repository.**
 
-All paths are centralized in [path_manager.py](path_manager.py).
+All paths are centralized in [path_manager.py](src/iroh/core/path_manager.py).
 
 ---
 
 ## How to run
 
-The workflow is two parts: **(A)** generate training data with Ollama (manual, done once), then **(B)** run everything else with [run_all.py](run_all.py).
+The workflow is two parts: **(A)** generate training data with Ollama (manual, done once), then **(B)** run everything else with [run_all.py](runnable/run_all.py).
 
 ### A. Generate rationales + hard negatives (Ollama)
 
-[run_all.py](run_all.py) does **not** do this step. Run it first. Because both the generic and typed scripts default to the *same* `temp_*.json` filenames, you must redirect the `old`/generic outputs explicitly.
+[run_all.py](runnable/run_all.py) does **not** do this step. Run it first. Because both the generic and typed scripts default to the *same* `temp_*.json` filenames, you must redirect the `old`/generic outputs explicitly.
 
 ```bash
 # balanced train set + train/test split
-python data_processing.py
+python runnable/data_processing.py
 
 # TYPED (new)
-python step1_rationales.py                     
-python step2_hard_negatives.py                 
+python runnable/step1_rationales.py                     
+python runnable/step2_hard_negatives.py                 
 
 # GENERIC (old) 
-python step1_old_rationales.py --output data/old_temp_step1_rationales.json
+python runnable/step1_old_rationales.py --output data/old_temp_step1_rationales.json
     
-python step2_old_hard_negatives.py \
+python runnable/step2_old_hard_negatives.py \
     --input  data/old_temp_step1_rationales.json \
     --output data/old_temp_step2_augmented.json
+```
+
+Alternatively you can use `uv run` instead of `python`:
+```bash
+uv run runnable/data_processing.py
 ```
 
 Both steps support resume (progress is saved every 25-50 items) and `--model` / `--workers` flags.
@@ -133,11 +142,11 @@ Both steps support resume (progress is saved every 25-50 items) and `--model` / 
 ### B. Run the full pipeline
 
 ```bash
-python run_all.py                 # everything 
-python run_all.py --dry-run       # print the plan, run nothing
-python run_all.py --from-stage 3  # resume from judge training
-python run_all.py --only 7 9      # just the ablation + top-30 submissions
-python run_all.py --skip 7        # skip the ablation
+python runnable/run_all.py                 # everything 
+python runnable/run_all.py --dry-run       # print the plan, run nothing
+python runnable/run_all.py --from-stage 3  # resume from judge training
+python runnable/run_all.py --only 7 9      # just the ablation + top-30 submissions
+python runnable/run_all.py --skip 7        # skip the ablation
 ```
 
 Stages:
@@ -161,25 +170,25 @@ Stages:
 
 ```bash
 # Cross-encoders / judges (all configs, or one by index)
-python train_cross_encoder.py            # all 6 CE configs
-python train_cross_encoder.py --config 0 # one config
-python train_judge_gemma4.py --qwen      # only the 4 Qwen judges
-python train_judge_gemma4.py --gemma     # only the 4 Gemma judges
+python runnable/train_cross_encoder.py            # all 6 CE configs
+python runnable/train_cross_encoder.py --config 0 # one config
+python runnable/train_judge_gemma4.py --qwen      # only the 4 Qwen judges
+python runnable/train_judge_gemma4.py --gemma     # only the 4 Gemma judges
 
 # One pipeline run
-python pipeline.py                                   # local eval, best CE+judge auto-picked
-python pipeline.py --ce CE_GTE_new --judge Judge_Qwen7B_old
-python pipeline.py --submission                      # all official test queries
-python pipeline.py --no-judge                        # Stages 1–2 only
+python runnable/pipeline.py                                   # local eval, best CE+judge auto-picked
+python runnable/pipeline.py --ce CE_GTE_new --judge Judge_Qwen7B_old
+python runnable/pipeline.py --submission                      # all official test queries
+python runnable/pipeline.py --no-judge                        # Stages 1–2 only
 
 # Targeted ablations
-python rationale_stage12_ablation.py --ce CE_GTE_new # rationale effect, judge OFF
-python ensemble_ablation.py --blend-only             # ensemble sanity check
+python runnable/rationale_stage12_ablation.py --ce CE_GTE_new # rationale effect, judge OFF
+python runnable/ensemble_ablation.py --blend-only             # ensemble sanity check
 
 # Hyperparameter search (greedy, S1 -> S2)
-python run_search.py --phase 1                       # Stage-1 grid (BM25/RRF/topk/QE)
-python run_search.py --phase 2                       # Stage-2 grid (CE blend/dedup/topk)
-python run_search.py --embedder-search               # compare 4 BGE-family embedders
+python runnable/run_search.py --phase 1                       # Stage-1 grid (BM25/RRF/topk/QE)
+python runnable/run_search.py --phase 2                       # Stage-2 grid (CE blend/dedup/topk)
+python runnable/run_search.py --embedder-search               # compare 4 BGE-family embedders
 ```
 
 > Note: Training scripts are **resumable**: a finished model (or an `early_stopped.flag`) is skipped, and a partial HuggingFace checkpoint is resumed automatically.
@@ -195,7 +204,7 @@ python run_search.py --embedder-search               # compare 4 BGE-family embe
 
 ### Final submission configuration
  
-| Knob             | Value                                           |
+| Component        | Value                                           |
 |------------------|-------------------------------------------------|
 | Dense embedder   | `bge-base-en-v1.5`                              |
 | Cross-encoder    | GTE-Reranker-ModernBERT-Base (no augmentation)  |

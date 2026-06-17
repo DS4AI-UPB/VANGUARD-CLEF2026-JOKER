@@ -1,6 +1,6 @@
 import os
 
-from path_manager import PathManager
+from iroh.core.path_manager import PathManager
 
 SEED = 42
 

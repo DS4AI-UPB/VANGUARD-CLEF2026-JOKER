@@ -17,15 +17,15 @@ import torch
 from rank_bm25 import BM25Okapi
 from sentence_transformers import CrossEncoder, SentenceTransformer, util
 
-from config import CE_CANDIDATES, USE_EXPANDED_BM25, ensure_dirs, EMBEDDER_CANDIDATES
-from path_manager import PathManager
-from utils import (
+from iroh.core.config import CE_CANDIDATES, USE_EXPANDED_BM25, ensure_dirs, EMBEDDER_CANDIDATES
+from iroh.core.path_manager import PathManager
+from iroh.core.utils import (
     build_qrel_dict, evaluate_trec, expand_query,
     load_corpus, load_humor_prior,
     load_json, save_json,
     seed_everything, stage_recall_record, tokenize_stemmed,
 )
-from pipeline import CorpusData, _rrf_fuse, _dedup_candidates, load_dense_embeddings
+from iroh.core.pipeline import CorpusData, _rrf_fuse, _dedup_candidates, load_dense_embeddings
 
 S1_GRID = {
     "stage1_topk": [1000, 2000, 3000],
@@ -926,7 +926,7 @@ def run_embedder_search(args) -> None:
         elapsed = time.time() - t0
         metrics = evaluate_trec(submission, qrels_data)
 
-        from utils import safe_mean
+        from iroh.core.utils import safe_mean
         record = {
             "embedder": emb_cfg["name"],
             "model_id": emb_cfg["model_id"],

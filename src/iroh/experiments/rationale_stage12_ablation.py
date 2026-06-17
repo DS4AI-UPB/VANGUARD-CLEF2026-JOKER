@@ -6,10 +6,10 @@ import zipfile
 import pandas as pd
 from sentence_transformers import CrossEncoder
 
-from config import CE_GTE_BASE_MODEL, ensure_dirs
-from path_manager import PathManager
-from pipeline import build_bm25_index, load_dense_embeddings, precompute_stage1, run_pipeline, CorpusData, JudgeData
-from utils import seed_everything, load_json, save_json, load_corpus, build_qrel_dict, load_humor_prior, evaluate_trec
+from iroh.core.config import CE_GTE_BASE_MODEL, ensure_dirs
+from iroh.core.path_manager import PathManager
+from iroh.core.pipeline import build_bm25_index, load_dense_embeddings, precompute_stage1, run_pipeline, CorpusData, JudgeData
+from iroh.core.utils import seed_everything, load_json, save_json, load_corpus, build_qrel_dict, load_humor_prior, evaluate_trec
 
 
 def _load_ce(name: str | None):
@@ -63,7 +63,7 @@ def _maybe_train_base_ce(name: str):
 
     Defaults to the GTE backbone to match the paper primary CE.
     """
-    from train_cross_encoder import train_one_config
+    from iroh.train.train_cross_encoder import train_one_config
 
     base_model_id = CE_GTE_BASE_MODEL
     is_gte = "gte" in base_model_id.lower()
@@ -79,8 +79,7 @@ def _maybe_train_base_ce(name: str):
         "patience": 3,
         "warmup_ratio": 0.15,
         "weight_decay": 0.02,
-        "automodel_args": ({"torch_dtype": "auto", "attn_implementation": "eager"}
-                           if is_gte else None),
+        "automodel_args": ({"torch_dtype": "auto", "attn_implementation": "eager"} if is_gte else None),
     }
     corpus = load_json(PathManager.CORPUS_FILE)
     corpus_texts = [d.get("text", "") for d in corpus]
