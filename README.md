@@ -8,7 +8,7 @@
 [Ciprian-Octavian Truică](https://scholar.google.com/citations?user=ZOKqr-QAAAAJ&hl=en), [Elena-Simona Apostol](https://scholar.google.com/citations?user=XUZcjpEAAAAJ&hl=en)
 
 [![Paper](https://img.shields.io/badge/Paper-CLEF%20JOKER%202026-blue)](https://When-Paper-Appears-it-Will-Work.com)
-[![Website](https://img.shields.io/badge/Project-Website-green)](https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER)
+[![Website](https://img.shields.io/badge/Project-Website-green)](https://ds4ai-upb.github.io/VANGUARD-CLEF2026-JOKER/)
 [![arXiv](https://img.shields.io/badge/arXiv-WIP-b31b1b)](https://arxiv.org/abs/WIP)
 [![BibTeX](https://img.shields.io/badge/BibTeX-Citation-teal)](#citation)
 
