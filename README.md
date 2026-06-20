@@ -10,6 +10,7 @@
 [![Paper](https://img.shields.io/badge/Paper-CLEF%20JOKER%202026-blue)](https://When-Paper-Appears-it-Will-Work.com)
 [![Website](https://img.shields.io/badge/Project-Website-green)](https://ds4ai-upb.github.io/VANGUARD-CLEF2026-JOKER/)
 [![arXiv](https://img.shields.io/badge/arXiv-WIP-b31b1b)](https://arxiv.org/abs/WIP)
+[![Hugging Face Collection](https://img.shields.io/badge/🤗-Collection-yellow)](https://huggingface.co/collections/DS4AI-UPB/clef-2026-vanguard)
 [![BibTeX](https://img.shields.io/badge/BibTeX-Citation-teal)](#citation)
 
 
