@@ -2,7 +2,7 @@
 
 [![Paper](https://img.shields.io/badge/Paper-CLEF%20JOKER%202026-7c3aed)](https://When-Paper-Appears-it-Will-Work.com)
 [![Code Implementation](https://img.shields.io/badge/Code-Implementation-green)](https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER)
-[![arXiv](https://img.shields.io/badge/arXiv-WIP-b31b1b.svg)](https://arxiv.org/abs/WIP)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.15618-b31b1b.svg)](https://arxiv.org/abs/2609.15618)
 [![Leaderboard](https://img.shields.io/badge/JOKER%202026%20Task%201%20EN-1st%20%C2%B7%200.6347%20MAP-b8860b)](https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -22,7 +22,7 @@ to be presented at the **JOKER Lab @ CLEF 2026** by team **VANGUARD**.
 
 ## Resources
 - [Paper (CLEF JOKER 2026 Working Notes)](https://When-Paper-Appears-it-Will-Work.com) - placeholder until the official proceedings entry is available
-- [arXiv](https://arxiv.org/abs/WIP) - WIP
+- [arXiv](https://arxiv.org/abs/2609.15618)
 - [Code](https://github.com/DS4AI-UPB/VANGUARD-CLEF2026-JOKER) - full three-stage pipeline, training, and ablation scripts
 
 ## Local Development
