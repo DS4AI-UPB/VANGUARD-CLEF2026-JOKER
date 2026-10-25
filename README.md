@@ -217,7 +217,6 @@ python runnable/run_search.py --embedder-search               # compare 4 BGE-fa
 
 
 ## Citation
-**WIP: Placeholder until the official proceedings entry is available:**
 ```bibtex
 @InProceedings{Ana_Maria_Luisa_Mocanu_2026_IROH_CLEF,
   author = {Mocanu, Ana-Maria Luisa and
