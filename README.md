@@ -220,11 +220,17 @@ python runnable/run_search.py --embedder-search               # compare 4 BGE-fa
 **WIP: Placeholder until the official proceedings entry is available:**
 ```bibtex
 @InProceedings{Ana_Maria_Luisa_Mocanu_2026_IROH_CLEF,
-    author    = {Mocanu, Ana-Maria Luisa and Mocanu, Sebastian and Truică, Ciprian-Octavian and Apostol, Elena-Simona},
-    title     = {IROH: Insightful Ranking Of Humor using Multi-Stage Hybrid Retrieval with Rationale-Distilled LLM Judges for JOKER 2026 Track Task 1 English},
-    booktitle = {Conference and Labs of the Evaluation Forum (CLEF), Joker 2026 Track Task 1 English},
-    month     = {June},
-    year      = {2026}
+  author = {Mocanu, Ana-Maria Luisa and
+            Mocanu, Sebastian and
+            Truică, Ciprian-Octavian and
+            Apostol, Elena-Simona},
+  title = {IROH: Insightful Ranking Of Humor using Multi-Stage Hybrid Retrieval with Rationale-Distilled LLM Judges for JOKER 2026 Track Task 1 English},
+  booktitle = {CLEF 2026 Working Notes},
+  series = {CEUR Workshop Proceedings},
+  volume = {4283},
+  pages = {4229--4245},
+  year = {2026},
+  publisher = {CEUR-WS.org}
 }
 ```
 
